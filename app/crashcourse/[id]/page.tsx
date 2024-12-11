@@ -16,7 +16,6 @@ interface UrlPrameter{
 export default function CrashCourse({params}: {params: Promise<UrlPrameter>}){
 
     // state varaibles needed for the component to work
-    const baseClinetUrl = "http://127.0.0.1:3000/"
     const baseServerUrl  = "https://preplyai-87b9b3124981.herokuapp.com/"
     const [crashCourse, setCrashCourse] = useState("")
     const [crashCourseResources, setCrashCourseResources] = useState<any[]>()
@@ -31,7 +30,11 @@ export default function CrashCourse({params}: {params: Promise<UrlPrameter>}){
             return crash_course_id
         }
         catch(error){
-            throw new Error("Failed to retrieve crash course ID.")
+            // added this to make type script compiler happy
+            if (error instanceof Error){
+                console.error(error.message)
+            }
+            throw new Error(`Failed to retrieve crash course ID.`) 
         }
         
     }
