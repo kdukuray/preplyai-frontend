@@ -1,10 +1,7 @@
-import Image from "next/image";
 import instagram_logo from "../../../images/instagram-logo.svg";
 import linkedin_logo from "../../../images/linkedin-logo.svg";
 import tiktok_logo from "../../../images/tiktok-logo.svg";
 import discord_logo from "../../../images/discord-logo.svg";
-import { TooltipProvider, Tooltip, TooltipTrigger } from "@radix-ui/react-tooltip";
-import { TooltipContent } from "@/components/ui/tooltip";
 import SocialMediaCard from "@/components/niche_components/social_media_card";
 export default function JoinedWaitlist(){
 
