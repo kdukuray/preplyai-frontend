@@ -53,7 +53,7 @@ export default function Test({params}: {params: Promise<UrlParameter>}){
     const [score, setScore] = useState<number>()
     const [result, setResult] = useState<string>()
     const router = useRouter();
-    const userSelections: Record<number, string> = {};
+    const [userSelections, setUserSelections] = useState<Record<number, string>>({});
     
     // function to get the test_id from the url parameter - has been refactored
     async function getTestId(params: Promise<UrlParameter>): Promise<number>{
@@ -109,7 +109,10 @@ export default function Test({params}: {params: Promise<UrlParameter>}){
     // function that handles the user selction of options - has been refactored
     function selectAnswer(question_id: number, user_selection: string){
         // Updates the user selection dictionary with every new user selection entry
-        userSelections[question_id] = user_selection;        
+        setUserSelections({
+            ...userSelections,
+            [question_id]: user_selection
+        })     
     }
 
     // function to compute test details (result and percentage correct) -  has been refactored
@@ -136,7 +139,7 @@ export default function Test({params}: {params: Promise<UrlParameter>}){
     function gradeTest(){
         const answered_questions: Question[] = []
         allQuestoins.map((question, index)=>{
-            question.user_selection = userSelections[index]
+            question.user_selection = userSelections[index] 
             answered_questions.push(question)
 
         })
@@ -269,7 +272,7 @@ export default function Test({params}: {params: Promise<UrlParameter>}){
                                         <RadioGroupItem value={option.letter} className="mr-3 h-6 w-6"/>
                                         <Label className={clsx("text-xl font-medium", {
                                             "text-slate-800": !(questionsAnswered && (option.letter == question.answer || option.letter ==  question.user_selection)),
-                                            "text-red-700": questionsAnswered && (option.letter != question.answer) && (option.letter == question.user_selection),
+                                            "text-red-700": questionsAnswered && (option.letter != question.answer),
                                             "text-green-700": questionsAnswered && (option.letter == question.answer) 
                                         })}>
                                             <ReactMarkdown
