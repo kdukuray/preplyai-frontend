@@ -1,14 +1,7 @@
-interface SpinnerDetails{
-    radius: string,
-}
-
-export default function Spinner(props: SpinnerDetails){
-
-
+export default function Spinner(){
     return(
-        <div className="flex justify-center items-center min-h-96 w-full bg-opacity-80 absolute bg-white p-56">
-            <div className={`h-${props.radius} w-${props.radius} border-4 animate-spin border-r-slate-400 border-l-slate-400 border-t-blue-800 border-b-blue-800 p-20 rounded-full`}>
-            
+        <div className="flex flex-col h-full w-full absolute top-1/2 bottom-1/2 -translate-y-1/2 justify-center bg-white bg-opacity-80 z-10">
+            <div className="`h-auto w-auto border-4 border-r-slate-400 border-l-slate-400 animate-spin border-t-blue-800 border-b-blue-800 p-24  m-auto rounded-full">
             </div>
         </div>
         

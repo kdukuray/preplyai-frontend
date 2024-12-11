@@ -1,0 +1,343 @@
+
+        // added for chromw because it keeps trying to scroll down on reloads of the same page
+        // if ('scrollRestoration' in window.history) {
+        //     window.history.scrollRestoration = 'manual';
+        //   }
+
+        --------------------------------------------------------------------------------------------------------------------------------
+        "use client";
+import { z } from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
+import { SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import Spinner from "@/components/spinner";
+
+export default function TestPrep(){
+
+    // state variables needed for the component
+    const [processing_form, set_processing_form] = useState<boolean>(false)
+    
+    const router = useRouter();
+
+    // schema defining the structure of the sorce material type form
+    const source_material_type_form_scehema = z.object({
+        material: z.string()
+    })
+
+    // defintion of the source matrial type form
+    const source_material_type_form = useForm<z.infer<typeof source_material_type_form_scehema>>({
+        resolver: zodResolver(source_material_type_form_scehema),
+        defaultValues: {material: "topics"}
+    })
+
+    // variable used to watch the state of the source material type to change the form accordingly
+    const source_material = source_material_type_form.watch();
+
+    // schema defining the structure of the sorce material form
+    const source_material_form_schema = z.object({
+        subject: z.string().min(2, "Subject name must be at least 2 letters."),
+        topics: z.union([
+            z.string().min(2, "Topics must be at least 100 words, long"),
+            z.instanceof(File)
+        ])
+    })
+
+    // defintion of the source matrial form
+    const source_material_form = useForm<z.infer<typeof source_material_form_schema>>({
+        resolver: zodResolver(source_material_form_schema),
+        defaultValues: {subject: "", topics: ""}
+    });
+
+
+    // function to generate a new test and push user to the next page
+    async function generate_test(){
+
+        // set processing form to true to start loading spinner
+        set_processing_form(true)
+
+        // construct the payload to be sent to the server
+        const subject: string = source_material_form.getValues().subject
+        const topics: any = source_material_form.getValues().topics
+        const source_material_type: string = source_material_type_form.getValues().material
+        const payload = new FormData();
+        payload.append("source_material_type", source_material_type)
+        payload.append("subject", subject);
+        payload.append("topics", topics)
+
+        try{
+            const response = await fetch(`http://127.0.0.1:8000/practice-test/generate-test/`, {
+                method: "POST",
+                body: payload,
+            })
+
+            if (!response.ok){
+            
+                throw new Error("Bad Response from the server");
+            }
+            const response_data = await response.json();
+            const new_test_id = response_data.id;
+            router.push(`testprep/test/${new_test_id}/`)
+
+        }
+        catch(error){
+            if (error instanceof Error){
+                console.error(error.message)
+            }
+        }
+        finally{
+            set_processing_form(false);
+        }
+    }
+        
+
+
+
+
+            // fetch(`http://127.0.0.1:8000/practice-test/generate-test/`, {
+            //     method: "POST",
+            //     headers: {
+            //         "content-type": "application/json"
+            //     },
+            //     body: JSON.stringify(payload),
+            // })
+            // .then((response)=>{
+            //     if (!response.ok){
+            //         set_processing_form(false);
+            //         throw new Error("Error in generating the new test");
+            //     }
+            //     response.json()
+            //     .then((data)=>{
+            //         const new_test_id = data.id;
+            //         router.push(`testprep/test/${new_test_id}/`)
+            //         set_processing_form(false);
+            //     })
+            //     .catch((err)=>{
+            //         set_processing_form(false);
+            //         throw new Error("Failed to generate a new test");
+                    
+            //     })
+            // })
+
+        
+        // else{
+            // console.log(topics);
+            // const payload = new FormData;
+            // payload.append("subject", subject);
+            // payload.append("topics", topics)
+
+            // // const headers  = {
+            // //     "content-tpye": "application/pdf",
+            // // }
+            // fetch("http://127.0.0.1:8000/practicetest/devpdfendpoint/", {
+            //     method: "POST",
+            //     body: payload,
+            // })
+            // set_processing_form(true)
+        // }
+
+        
+        
+   
+
+
+    return (
+        <div>
+            {processing_form && <Spinner radius="md"/>}
+            <h3 className="text-4xl text-center w-96 m-auto">Create a <span className="signature-color">practice test</span> to help you better prepare for <span className="signature-color">exams</span></h3>
+            
+            {/* Form to choose the type of source material to use */}
+            <Form {...source_material_type_form}>
+                <form className="m-auto w-96 block space-y-6">
+                    <FormField
+                    control={source_material_type_form.control}
+                    name="material"
+                    render={({field})=>(
+                        <FormItem>
+                            <FormLabel>Source Material</FormLabel>
+                                <Select defaultValue={"topics"} onValueChange={field.onChange}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Source Material"/>
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Source Material</SelectLabel>
+                                                <SelectItem value="topics">Topics</SelectItem>
+                                                <SelectItem value="questions">Questions</SelectItem>
+                                                <SelectItem value="notes">Notes</SelectItem>
+                                            </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                    <FormDescription>Source Material</FormDescription>
+                                    <FormMessage/>
+                                
+                        </FormItem>
+                    )}
+                    />
+                </form>
+            </Form>
+
+
+            <div className="flex justify-center items-center">
+            {/* Form to generate practice based on source material */}
+            <Form {...source_material_form}>
+                <form className="w-5/6 md:w-1/2 border p-16 border-slate-300 rounded-sm mt-6" onSubmit={source_material_form.handleSubmit(generate_test)}>
+                    <FormField 
+                    control={source_material_form.control}
+                    name="subject"
+                    render={({field})=>(
+                        <FormItem>
+                            <FormLabel className="font-bold">Subject</FormLabel>
+                            <FormControl>
+                                <Input {...field}/>
+                            </FormControl>
+                        </FormItem>
+
+                    )}
+                    />
+                    <FormField 
+                    control={source_material_form.control}
+                    name="topics"
+                    render={({field})=>(
+                        <FormItem>
+                            <FormLabel className="font-bold resize-none">Topics</FormLabel>
+                            <FormControl>
+                                {source_material.material == "topics"? 
+                                <Textarea {...field} 
+                                value={typeof field.value === "string" ? field.value : ""}
+                                /> : 
+                                <Input 
+                                type="file"
+                                onChange={(e)=>{
+                                    const uploaded_file = e.target.files?.[0];
+                                    if (uploaded_file){
+                                        source_material_form.setValue("topics", uploaded_file, {shouldValidate: true});
+                                    } 
+                                }}
+                                /> }
+                            </FormControl>
+                        </FormItem>
+
+                    )}
+                    />
+                    <Button className="w-1/2 m-auto block mt-8 signature-color-btn">Create</Button>
+                </form>
+            </Form>
+        
+            </div>
+            
+            
+
+        </div>
+    )
+
+
+
+
+
+
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <div className="w-52 mr-2 ml-2 signature-color bg-white border-2 rounded-md p-2 border-slate-200 font-bold text-lg ">Get Study Resources</div>
+                            </TooltipTrigger>
+                            <TooltipContent className="font-semibold">Get Study Resources</TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger>
+                                <div className="w-52 mr-2 ml-2 signature-color bg-white border-2 rounded-md p-2 border-slate-200 font-bold text-lg ">Take Adapted Test</div>
+                            </TooltipTrigger>
+                            <TooltipContent className="font-semibold">Take New Test Based On Mistakes</TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+}
+
+
+------------------------------------------------------------------------------------------------
+dev process page"use client"
+
+import Link from "next/link"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+import { Button } from "@/components/ui/button"
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
+const FormSchema = z.object({
+  email: z
+    .string({
+      required_error: "Please select an email to display.",
+    })
+    .email(),
+})
+
+export default function SelectForm() {
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+  })
+
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    null
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a verified email to display" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="m@example.com">m@example.com</SelectItem>
+                  <SelectItem value="m@google.com">m@google.com</SelectItem>
+                  <SelectItem value="m@support.com">m@support.com</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                You can manage email addresses in your{" "}
+                <Link href="/examples/forms">email settings</Link>.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit">Submit</Button>
+      </form>
+    </Form>
+  )
+}

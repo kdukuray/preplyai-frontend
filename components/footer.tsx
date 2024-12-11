@@ -4,7 +4,6 @@ export default function Footer(){
             <div>
                 <p className="text-center text-slate-500">Copyright &copy; 2024 Preply AI, Inc.</p>
             </div>
-
         </footer>
     )
 

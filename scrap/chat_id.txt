@@ -1,0 +1,174 @@
+"use client";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Textarea } from "@/components/ui/textarea";
+import clsx from "clsx";
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+
+interface UrlParameter{
+    id: number
+}
+
+export default function Chat({params}: {params: Promise<UrlParameter>}){
+
+    // varaible that holds all the messages
+    const [all_messages, set_all_messages] = useState<any>([])
+
+    const last_message_ref: any = useRef(null);
+
+    function scroll_thread_latest() {
+        if (last_message_ref.current) {
+            last_message_ref.current.scrollIntoView({ behavior: "smooth", block: "end" });
+            console.log(333)
+        }
+    }
+    // schema for chat form
+    const chat_form_schema = z.object({
+        message: z.string()
+    })
+
+    // actual chat form definition
+    const chat_form = useForm<z.infer<typeof chat_form_schema>>({
+        resolver: zodResolver(chat_form_schema),
+        defaultValues: {"message": ""}
+    })
+
+    // function to get the thread id from the url
+    async function get_thread_id(params: Promise<UrlParameter>): Promise<number>{
+        const result = await params;
+        const chat_id = result.id
+        return chat_id
+    }
+
+    // function to get a thread's messages from the serever
+    async function get_thread(){
+        // get thread id from the url
+        const thread_id: number =  await get_thread_id(params);
+        // create and add to a new form to send that thread id to the server
+        const payload = new FormData()
+        payload.append("thread_id", `${thread_id}`);
+
+        try{ 
+            
+            const response = await fetch("http://127.0.0.1:8000/chat/get-thread/", {
+            method: "POST",
+            body: payload,
+            })
+            if (!response.ok){
+            throw new Error("Bad Response from server")
+            }
+            else{
+            // if response is good, parse the json out and load it into the state variable
+            const data  = await response.json();
+            set_all_messages(data["messages"])
+
+            }
+        }
+        catch(error){
+            if (error instanceof Error){
+                console.error(error);
+            }
+        }finally{
+            scroll_thread_latest();
+            console.log("new")
+        }
+       
+    }
+
+    async function handle_form_submit(){
+        const payload = new FormData();
+        const message = chat_form.getValues("message");
+    
+
+        // if all messages is empty, then this is a new chat
+        if (!all_messages){
+            payload.append("new_chat", "True")
+        }
+        // if it is not empty, this is an eisting chat, append that is not a new chat, and append the chat id
+        else{
+            const thread_id = await get_thread_id(params);
+            payload.append("new_chat", "False")
+            payload.append("thread_id", `${thread_id}`)
+        }
+        // Regardless, the new message from the user has to be sent, so append it
+        payload.append("message", message)
+        
+        // Send the requet to the server, we do nothing with the response so simply get all thread chats after the fetch call
+        fetch("http://127.0.0.1:8000/chat/", {
+            method: "POST",
+            body: payload
+        })
+        .then(()=>{
+            get_thread();
+            chat_form.reset()
+        })
+
+    }
+
+  
+    useEffect(()=>{
+        const set_tone = async () =>{
+            get_thread()
+        }
+        set_tone();
+    }, [])
+    
+
+
+
+    return(
+    <div className="chat-page min-h-full flex justify-center min-w-full">
+        <div className="chat-page-container fixed flex pr-24 pl-24 flex-col m-auto  overflow-y-auto ">
+
+            <div className="thread-messages-container overflow-y-auto">
+                {all_messages && 
+                all_messages.map((message: any, index: number)=>(
+                    <div key={message["id"]} 
+                    ref={index === all_messages.length - 1 ? last_message_ref : null}
+                    className={clsx("rounded-md mb-2 p-2", {
+                        "bg-slate-200 ml-auto w-96": message["role"] == "user",
+                        "w-1/2": message["role"] != "user"
+                    })}>
+                        <h3>{message["role"]}</h3>
+                        <p>{message["message"]}</p>
+                    </div>
+                ))
+                }
+            </div>
+
+            <div >
+                <Form {...chat_form}>
+                    <form onSubmit={chat_form.handleSubmit(handle_form_submit)} className="chat-form ">
+                        <FormField
+                        control={chat_form.control}
+                        name="message"
+                        render={({field})=>(
+                            <FormItem>
+                                <FormControl>
+                                    <div className="chat-input-container rounded-md relative resize-y">
+                                        <Textarea {...field} className="chat-input h-32 m-auto mt-2 mb-3 block border-none bg-slate-200 resize-y" placeholder="Chat With PreplyAI">
+                                        </Textarea>
+                                        <Button className="chat-input-btn absolute h-8 w-8 flex justify-center items-center rounded-full">
+                                            <p>&gt;&gt;</p></Button>
+
+                                    </div>
+                                    
+                            
+
+                                </FormControl>
+                                
+                            </FormItem>
+                        )}
+                        ></FormField>
+                        
+                    </form>
+                </Form>
+            </div>
+
+        </div>
+
+    </div>)
+}

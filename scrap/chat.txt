@@ -1,0 +1,134 @@
+"use client";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Textarea } from "@/components/ui/textarea";
+import clsx from "clsx";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+
+
+
+export default function Chat(){
+    const [all_messages, set_all_messages] = useState<any>([])
+    const [testing, set_testing] = useState("sss");
+
+
+    const [chat_present, set_chat_present] = useState<boolean>(false);
+    const chat_form_schema = z.object({
+        message: z.string()
+    })
+
+    const chat_form = useForm<z.infer<typeof chat_form_schema>>({
+        resolver: zodResolver(chat_form_schema),
+        defaultValues: {"message": ""}
+    })
+
+    async function get_thread(){
+        const thread_id: number = 1;
+        const payload = new FormData()
+        payload.append("thread_id", `${thread_id}`);
+        const resp = await fetch("http://127.0.0.1:8000/chat/get-thread/", {
+            method: "POST",
+            body: payload,
+        })
+        const data  = await resp.json();
+        console.log(data)
+        set_all_messages(data["messages"])
+    }
+
+    async function handle_form_submit(){
+        const payload = new FormData();
+        const message = chat_form.getValues("message");
+        console.log(1)
+        // if the messages conatiner is empty, then the message must be new
+        if (!all_messages){
+            payload.append("new_chat", "True")
+            console.log(2)
+        }
+        else{
+            payload.append("new_chat", "False")
+            console.log(3)
+        }
+        payload.append("message", message)
+        console.log(4)
+        
+        const resp = await fetch("http://127.0.0.1:8000/chat/", {
+            method: "POST",
+            body: payload
+        })
+        get_thread();
+        console.log(5)
+
+        // if (resp.ok){
+        //     const data = await resp.json()
+        //     set_testing(data["actual_response"])
+        //     console.log(data["actual_response"])
+        // }
+        // set_chat_present(true);
+        // console.log("pass")
+    }
+
+  
+    useEffect(()=>{
+        const set_tone = async () =>{
+            get_thread()
+        }
+        set_tone();
+    }, [])
+    
+
+
+
+    return(
+    <div>
+        <div className="min-h-dvh relative">
+
+            <div className="chat-thread transition-all overflow-y-auto">
+                {all_messages && 
+                all_messages.map((message: any)=>(
+                    <div key={message["id"]} className={clsx("w-96", {
+                        "bg-slate-200 ml-auto": message["role"] == "user"
+                    })}>
+                        <h3>{message["role"]}</h3>
+                        <p>{message["message"]}</p>
+                    </div>
+                ))
+                }
+            </div>
+
+            <div className="chat-form-container fixed flex flex-col justify-center m-auto items-center">
+                <div>wdoscm</div>
+                <Form {...chat_form}>
+                    <form onSubmit={chat_form.handleSubmit(handle_form_submit)} className="chat-form">
+                        <FormField
+                        control={chat_form.control}
+                        name="message"
+                        render={({field})=>(
+                            <FormItem>
+                                <FormControl>
+                                    <div className="chat-input rounded-md relative resize-y">
+                                        <Textarea {...field} className="chat-input h-32 w-96 m-auto block border-none bg-slate-100 resize-y" placeholder="Chat With PreplyAI">
+                                        </Textarea>
+                                        <Button className="chat-input-btn absolute h-8 w-8 flex justify-center items-center rounded-full">
+                                            <p>&gt;&gt;</p></Button>
+
+                                    </div>
+                                    
+                            
+
+                                </FormControl>
+                                
+                            </FormItem>
+                        )}
+                        ></FormField>
+                        
+                    </form>
+                </Form>
+            </div>
+
+        </div>
+
+    </div>)
+}

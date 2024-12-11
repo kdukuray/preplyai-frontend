@@ -5,9 +5,10 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
-/* My custom css */
+/*------------- My Custom CSS -------------*/
 :root{
   --preplyai_color: rgb(26, 26, 224);
+  --font-poppins: "Poppins", sans-serif;
 }
 
 .signature-color{
@@ -18,21 +19,84 @@ body {
   background-color: var(--preplyai_color);
 }
 
+.signature-color-btn:hover{
+  background-color: rgb(48, 48, 213);
+}
+
+.page-content{
+  min-width: 85%;
+}
+
+/* Crash Course Page Styles */
+.crash-course-container{
+  width: 80%;
+}
+
+.crash-course-page h1{
+  font-size: 2.5rem;
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.crash-course-page h2{
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+.crash-course-page p{
+  margin-bottom: 1rem;
+}
+
+.crash-course-page ul{
+  list-style: disc;
+}
+.crash-course-page li{
+  margin-bottom: 1rem;
+  margin-left: 2rem;
+}
+
+/* Chat Page Styles */
+
+.chat-page-container{
+  width: 80%;
+  min-width: 80%;
+  max-width: 80%;
+  min-height: 85%;
+  max-height: 85%;;
+}
+
+.chat-page-container{
+  width: 50rem;
+}
+.chat-input{
+  width: 60rem
+}
+
+.chat-input-btn{
+  right: 1rem;
+  bottom: 0.5rem
+} 
+
+/* Home page styles */
 .soft-message-container{
   padding: 0% 33%;
 }
 
-/* .testprep-question{
-  width: 60rem;
+/* Summary Page styles */
+.summary-page-conatiner{
+  width: 800px;
 }
 
-@media (max-width: 768px) {
-  .testprep-question{
-    width: 66%;
-  }
-} */
+/*------------- End of my styles -------------*/
+strong{
+  font-size: large;
+}
 
-/* End my custim css */
+body {
+  font-family: var(--font-poppins), var(--font-geist-sans), var(--font-geist-mono), sans-serif;
+}
 
 @layer base {
   :root {
@@ -61,6 +125,14 @@ body {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .dark {
     --background: 222.2 84% 4.9%;
@@ -87,6 +159,14 @@ body {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
@@ -98,3 +178,4 @@ body {
     @apply bg-background text-foreground;
   }
 }
+

@@ -8,11 +8,11 @@ import { TooltipContent } from "@/components/ui/tooltip";
 import SocialMediaCard from "@/components/niche_components/social_media_card";
 export default function JoinedWaitlist(){
 
-    const soft_message: string = "🎉 Success! You've been added to the PreplyAI waitlist. 🚀 Get ready to elevate your test prep experience—you're one step closer to smarter study sessions. Stay tuned!"
-    const instagram_link: string = "";
-    const linkedin_link: string = "";
-    const discord_link: string = "";
-    const tiktok_link: string = "";
+    const softMessage: string = "🎉 Success! You've been added to the PreplyAI waitlist. 🚀 Get ready to elevate your test prep experience—you're one step closer to smarter study sessions. Stay tuned!"
+    const instagramLink: string = "https://www.instagram.com/preplyai/?utm_source=ig_web_button_share_sheet";
+    const linkedinLink: string = "https://x.com/preplyai";
+    const discordLink: string = "https://discord.gg/xpuvWQwwnZ";
+    const tiktokLink: string = "https://www.tiktok.com/@preplyai";
 
 
     return (
@@ -23,7 +23,7 @@ export default function JoinedWaitlist(){
             </div>
 
             <div className="soft-message-container flex justify-center mt-10">
-                <p className="w-auto text-center text-slate-500">{soft_message}</p>
+                <p className="w-auto text-center text-slate-500">{softMessage}</p>
             </div>
 
             <div className="flex flex-col justify-center items-center mt-20">
@@ -31,10 +31,10 @@ export default function JoinedWaitlist(){
 
                 <div className="flex flex-row justify-around lg:w-1/4">
 
-                    <SocialMediaCard image_alt_text="instgarm-logo" image_src={instagram_logo} tooltip_content="Instagram" link={instagram_link}/>
-                    <SocialMediaCard image_alt_text="linkedin-logo" image_src={linkedin_logo} tooltip_content="Linked In" link={linkedin_link}/>
-                    <SocialMediaCard image_alt_text="Discord-logo" image_src={discord_logo} tooltip_content="Discord" link={discord_link}/>
-                    <SocialMediaCard image_alt_text="Tiktok-logo" image_src={tiktok_logo} tooltip_content="Tiktok"link={tiktok_link}/>
+                    <SocialMediaCard image_alt_text="instgarm-logo" image_src={instagram_logo} tooltip_content="Instagram" link={instagramLink}/>
+                    <SocialMediaCard image_alt_text="linkedin-logo" image_src={linkedin_logo} tooltip_content="Linked In" link={linkedinLink}/>
+                    <SocialMediaCard image_alt_text="Discord-logo" image_src={discord_logo} tooltip_content="Discord" link={discordLink}/>
+                    <SocialMediaCard image_alt_text="Tiktok-logo" image_src={tiktok_logo} tooltip_content="Tiktok"link={tiktokLink}/>
                     
                 </div>
 
