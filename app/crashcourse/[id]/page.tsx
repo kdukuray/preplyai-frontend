@@ -81,7 +81,7 @@ export default function CrashCourse({params}: {params: Promise<UrlPrameter>}){
             getCrashCourse(crash_course_id)
            
         })
-    }, [])
+    }, [getCrashCourseId, getCrashCourse])
 
     return (
         <div className="crash-course-page">

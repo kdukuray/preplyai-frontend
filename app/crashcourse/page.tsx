@@ -14,7 +14,6 @@ import { useToast } from "@/hooks/use-toast";
 export default function CrashCourseGenerator(){
 
     // state variables needed for page
-    const baseClinetUrl = "http://127.0.0.1:3000/"
     const baseServerUrl  = "https://preplyai-87b9b3124981.herokuapp.com/"
     const [formIsLoading, setFormIsLoading] = useState(false);
     const [preplyaiUserId, setPreplyaiUserId] = useState<string | null>();
@@ -77,7 +76,7 @@ export default function CrashCourseGenerator(){
 
     useEffect(()=>{
         setPreplyaiUserId(getOrCreateUuid());
-    })
+    }, [setPreplyaiUserId])
 
 
     return (

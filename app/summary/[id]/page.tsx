@@ -10,7 +10,6 @@ interface UrlParameter{
 export default function SummaryPage({params}: {params: Promise<UrlParameter>}){
 
     // state variables needed for the component
-    const baseClinetUrl = "http://127.0.0.1:3000/"
     const baseServerUrl  = "https://preplyai-87b9b3124981.herokuapp.com/"
     const [allSummaryPoints, setAllSummaryPoints] = useState<any[]>([]);
     const [summaryLoading, setSummaryLoading] = useState<boolean>(true);
@@ -69,7 +68,7 @@ export default function SummaryPage({params}: {params: Promise<UrlParameter>}){
             getSummary(test_id)
         })
       
-    }, [])
+    }, [getSummaryId, getSummary])
 
     return (
         <div>

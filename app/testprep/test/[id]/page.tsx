@@ -209,7 +209,7 @@ export default function Test({params}: {params: Promise<UrlParameter>}){
         .then((test_id: number)=>{
             getTest(test_id)
         })
-    }, [])
+    }, [getTestId, getTest])
 
     return (
         <>
@@ -290,8 +290,8 @@ export default function Test({params}: {params: Promise<UrlParameter>}){
                             ...prev_explanations_loading,
                             [index]: true
                         }))
-                        let correct_option = question.options.find(opt => opt.letter === question.answer)?.value;
-                        let user_selection = question.options.find(opt => opt.letter === question.user_selection)?.value;
+                        const correct_option = question.options.find(opt => opt.letter === question.answer)?.value;
+                        const user_selection = question.options.find(opt => opt.letter === question.user_selection)?.value;
                         explainAnswer(index, question.prompt, correct_option, user_selection)}}>
                         Explain
                     </Button>}
