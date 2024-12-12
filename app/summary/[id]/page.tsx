@@ -68,7 +68,7 @@ export default function SummaryPage({params}: {params: Promise<UrlParameter>}){
             getSummary(test_id)
         })
       
-    }, [getSummaryId, getSummary])
+    }, [])
 
     return (
         <div>

@@ -76,7 +76,7 @@ export default function CrashCourseGenerator(){
 
     useEffect(()=>{
         setPreplyaiUserId(getOrCreateUuid());
-    }, [setPreplyaiUserId])
+    }, [])
 
 
     return (

@@ -212,7 +212,7 @@ export default function Test({params}: {params: Promise<UrlParameter>}){
         .then((test_id: number)=>{
             getTest(test_id)
         })
-    }, [getTestId, getTest])
+    }, [])
 
     return (
         <>
