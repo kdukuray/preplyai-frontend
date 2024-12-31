@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 export default function Summarize(){
 
     // state variables needed for component
-    const baseServerUrl  = "https://preplyai-87b9b3124981.herokuapp.com/"
+    const baseServerUrl  = process.env.NEXT_PUBLIC_SERVER_URL
     const [generatingSummary, setGeneratingSummary] = useState<boolean>(false);
     const router = useRouter();
     const { toast } = useToast()

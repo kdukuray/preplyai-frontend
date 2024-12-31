@@ -16,7 +16,7 @@ interface UrlPrameter{
 export default function CrashCourse({params}: {params: Promise<UrlPrameter>}){
 
     // state varaibles needed for the component to work
-    const baseServerUrl  = "https://preplyai-87b9b3124981.herokuapp.com/"
+    const baseServerUrl  = process.env.NEXT_PUBLIC_SERVER_URL;
     const [crashCourse, setCrashCourse] = useState("")
     const [crashCourseResources, setCrashCourseResources] = useState<any[]>()
     const [crashCourseLoading, setCrashCourseLoading] = useState<boolean>(true);

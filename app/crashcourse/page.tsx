@@ -14,7 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 export default function CrashCourseGenerator(){
 
     // state variables needed for page
-    const baseServerUrl  = "https://preplyai-87b9b3124981.herokuapp.com/"
+    const baseServerUrl  = process.env.NEXT_PUBLIC_SERVER_URL;
     const [formIsLoading, setFormIsLoading] = useState(false);
     const [preplyaiUserId, setPreplyaiUserId] = useState<string | null>();
     const router = useRouter();

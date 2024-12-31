@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 export default function TestPrep(){
 
     // state variables needed for the component
-    const baseServerUrl  = "https://preplyai-87b9b3124981.herokuapp.com/"
+    const baseServerUrl  = process.env.NEXT_PUBLIC_SERVER_URL;
     const [processingForm, setProcessingForm] = useState<boolean>(false)
     const router = useRouter();
     const { toast } = useToast()

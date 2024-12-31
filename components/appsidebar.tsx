@@ -19,7 +19,7 @@ export default function AppSideBar(){
     const [previouslyGeneratedSummaries, setPreviouslyGeneratedSummaries] = useState<PreviousGenerations []>([])
     const [previouslyGeneratedPracticeTests, setPreviouslyGeneratedTests] = useState<PreviousGenerations []>([])
     const { toast } = useToast();
-    const baseServerUrl: string = "https://preplyai-87b9b3124981.herokuapp.com/"
+    const baseServerUrl: string = process.env.NEXT_PUBLIC_SERVER_URL;
 
     // function to get previously generated crash courses
     async function getGeneratedCrashCourses(){

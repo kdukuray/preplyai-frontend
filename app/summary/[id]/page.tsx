@@ -10,7 +10,7 @@ interface UrlParameter{
 export default function SummaryPage({params}: {params: Promise<UrlParameter>}){
 
     // state variables needed for the component
-    const baseServerUrl  = "https://preplyai-87b9b3124981.herokuapp.com/"
+    const baseServerUrl  = process.env.NEXT_PUBLIC_SERVER_URL;
     const [allSummaryPoints, setAllSummaryPoints] = useState<any[]>([]);
     const [summaryLoading, setSummaryLoading] = useState<boolean>(true);
     const { toast } = useToast();
