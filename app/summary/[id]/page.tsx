@@ -2,6 +2,10 @@
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import Spinner from "@/components/spinner";
+import ReactMarkdown from 'react-markdown';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css'
 
 // interface defining the structure of the url parameter
 interface UrlParameter{
@@ -11,8 +15,8 @@ export default function SummaryPage({params}: {params: Promise<UrlParameter>}){
 
     // state variables needed for the component
     const baseServerUrl  = process.env.NEXT_PUBLIC_SERVER_URL;
-    const [allSummaryPoints, setAllSummaryPoints] = useState<any[]>([]);
     const [summaryLoading, setSummaryLoading] = useState<boolean>(true);
+    const [summary, setSummary] = useState<string>("");
     const { toast } = useToast();
 
 
@@ -30,8 +34,6 @@ export default function SummaryPage({params}: {params: Promise<UrlParameter>}){
 
     // function that reteives summary information from the server
     async function getSummary(summary_id: number){
- 
-        const all_summary_points_parsed = [];
 
         try{
             const response = await fetch(`${baseServerUrl}summary/${summary_id}/`);
@@ -40,11 +42,8 @@ export default function SummaryPage({params}: {params: Promise<UrlParameter>}){
                 throw new Error("Failed to fetch from the server")
             }
             const data = await response.json()
-            const summary_points_in_data = data["summary_points"]
-            for (let i  = 0; i < summary_points_in_data.length; i++){
-                all_summary_points_parsed.push(JSON.parse(summary_points_in_data[i]))
-            }
-            setAllSummaryPoints(all_summary_points_parsed);
+            const summary = data["summary_points"];
+            setSummary(summary);
         
         }
         catch(error){
@@ -75,35 +74,14 @@ export default function SummaryPage({params}: {params: Promise<UrlParameter>}){
             {summaryLoading && <Spinner></Spinner>}
             <div className="summary-page-conatiner flex flex-col m-auto">
             {!summaryLoading && 
-            allSummaryPoints.map((summary: any, summaryIndex: number)=>(
-                <div key={summaryIndex} className="border-b-2 pb-10 mt-10 border-b-blacks">
-                    <h3 className="main-point text-3xl font-extrabold mb-4">Main Point: {summary["main_topic"]}</h3>
-                    <ol>
-
-                    {summary["key_points"].map((key_point: any, keyPointIndex: number)=>(
-                        <div key={keyPointIndex} className=" mb-5">
-                            <h5 className="font-semibold text-lg mb-5">{keyPointIndex+1}. {key_point["key_point"]}</h5>
-                            <ol className="ml-20">
-                                {key_point["supporting_details"].map((supportingDocument: any, supportingDetailsIndex: number)=>(
-                                    <li className="list-disc text-lg" key={supportingDetailsIndex}>{supportingDocument}</li>
-                                ))}
-                            </ol>
-                         
-                        </div>
-                        
-                    ))}
-
-                    </ol>
-                    <h5 className="font-semibold text-lg mb-5">Additonal Points</h5>
-                    <ol>
-                        {summary["additional_insights"].map((additionalInsights: any, additionalInsightsIndex: number)=>(
-                            <li className="list-disc text-lg" key={additionalInsightsIndex}>{additionalInsights}</li>
-                        ))}
-                    </ol>
-
-                </div>
-                
-            ))
+            <div className="summary-container">
+                <ReactMarkdown
+                remarkPlugins={[remarkMath]}
+                rehypePlugins={[rehypeKatex]}
+                >
+                {summary}
+                </ReactMarkdown>
+            </div>
             }
             </div>
             

@@ -57,6 +57,45 @@ body {
   margin-left: 2rem;
 }
 
+/* Summary Page styles */
+.summary-container h1{
+  font-size: 2rem;
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 1rem;
+
+}
+
+.summary-container h2{
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+.summary-container h3{
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+.summary-container p{
+  margin-bottom: 1rem;
+}
+
+.summary-container ul{
+  list-style: disc;
+}
+
+.summary-container li{
+  margin-bottom: 1rem;
+  margin-left: 2rem;
+}
+.summary-container strong{
+  font-size: 1rem;
+}
+
+
+
 /* Chat Page Styles */
 
 .chat-page-container{

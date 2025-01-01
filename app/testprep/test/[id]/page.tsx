@@ -41,7 +41,7 @@ interface UserSelectioin{
 
 export default function Test({params}: {params: Promise<UrlParameter>}){
     const baseClinetUrl = "http://127.0.0.1:3000/"
-    const baseServerUrl  = "https://preplyai-87b9b3124981.herokuapp.com/"
+    const baseServerUrl  = process.env.NEXT_PUBLIC_SERVER_URL;
     const { toast } = useToast();
 
     // variables that need state and their setter functions
